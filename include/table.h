@@ -15,6 +15,7 @@ typedef struct {
 
 int find(char *name);
 int declare(char *name, type type);
+void undeclare(char *name);
 int setn(char *name, float value);
 float getn(char *name);
 char *sets(char *name, char *value);

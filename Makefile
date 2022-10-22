@@ -1,19 +1,32 @@
-all: parser lexer compile run
+CC=gcc
+LFLAGS=-lm
+DEBUG=-g -DDEBUG
+OUT=compiler
+OUTDIR=bin/
+OBJDIR=obj/
+
+all: obj bin parser lexer compile run
+
+obj: obj/
+	mkdir obj
+
+bin: bin/
+	mkdir bin
 
 parser: parser.y
-	bison -d parser.y; mv parser.tab.c obj/; mv parser.tab.h obj/
+	bison -d parser.y; mv parser.tab.c $(OBJDIR); mv parser.tab.h $(OBJDIR)
 
 lexer: lexer.l
-	flex lexer.l; mv lex.yy.c obj/
+	flex lexer.l; mv lex.yy.c $(OBJDIR)
 
 table: src/table.c
-	cd src; gcc -c *.c -I../include/; mv table.o ../obj/
+	cd src; $(CC) -c *.c -I../include/; mv table.o ../$(OBJDIR)
 
-compile: obj/lex.yy.c obj/parser.tab.c table
-	cd obj; gcc -g lex.yy.c parser.tab.c table.o -lm -o compiler; mv compiler ../bin/
+compile: $(OBJDIR)/lex.yy.c $(OBJDIR)/parser.tab.c table
+	cd $(OBJDIR); $(CC) $(DEBUG) lex.yy.c parser.tab.c table.o $(LFLAGS) -o $(OUT); mv compiler ../$(OUTDIR)
 
 run: compile
-	cd bin
+	cd $(OUTDIR); ./$(OUT)
 
 clean:
-	cd obj; rm *; cd ../bin/; rm compiler
+	cd $(OBJDIR); rm *; cd ../$(OUTDIR); rm $(OUT)

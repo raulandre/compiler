@@ -42,19 +42,19 @@ S : %empty
   ;
 
 statement: TYPE ID SEMI { declare($2, $1); }
-        | TYPE ID ATTRIB exp SEMI { declare($2, $1); setn($2, $4); }
-        | TYPE ID ATTRIB STR SEMI { declare($2, $1); sets($2, $4); }
+        | TYPE ID ATTRIB exp SEMI { declare($2, $1); if(setn($2, $4) == -1) undeclare($2); }
+        | TYPE ID ATTRIB STR SEMI { declare($2, $1); if(sets($2, $4) == NULL) undeclare($2); }
         | ID ATTRIB exp SEMI { setn($1, $3); }
         | ID ATTRIB STR SEMI { sets($1, $3); }
-	      | ID PEQU exp SEMI { setn($1, getn($1) + $3); }
-	      | ID MEQU exp SEMI { setn($1, getn($1) - $3); }
-	      | ID TEQU exp SEMI { setn($1, getn($1) * $3); }
-	      | ID DEQU exp SEMI { setn($1, getn($1) / $3); }
+	| ID PEQU exp SEMI { setn($1, getn($1) + $3); }
+	| ID MEQU exp SEMI { setn($1, getn($1) - $3); }
+	| ID TEQU exp SEMI { setn($1, getn($1) * $3); }
+	| ID DEQU exp SEMI { setn($1, getn($1) / $3); }
         | PRINT ID SEMI { dyn_print($2); }
         | PRINT STR SEMI { char *s = $2 + 1; int c = 0; while(s[c] != '"') putc(s[c++], stdout); putc('\n', stdout); }
         | PRINT exp SEMI { printf("%f\n", $2); }
         | TIDY ID SEMI { if(gettype($2) == STRING) free(gets($2)); }
-		    | QUIT SEMI { puts("Goodbye!\n"); exit(0); } 
+	| QUIT SEMI { puts("Goodbye!\n"); exit(0); } 
         | DO S END
         ;
 

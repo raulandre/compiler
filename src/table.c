@@ -28,12 +28,22 @@ int declare(char *name, type type) {
         printf("[INFO]: variable '%s' declared!\n", name);
 #endif
         return last - 1;
+    } else {
+	fprintf(stderr, "Error on line %d, attempted to redefine variable %s\n", yylineno, name);	
+	return -1;
     }
 
     //strdup pra passar do lexer pro parser causa vazamento de memória se não for liberado agora
     free(name);
 
     return pos;
+}
+
+void undeclare(char *name) {
+	int pos = find(name);
+	sym s;
+	table[pos] = s;
+	last--;
 }
 
 int setn(char *name, float value) {
@@ -46,7 +56,7 @@ int setn(char *name, float value) {
     
     if(table[pos].type != INT && table[pos].type != CHAR && table[pos].type != FLOAT) {
         fprintf(stderr, "Error on line %d, variable %s is not of type INT or similar\n", yylineno, name);
-        return rand();
+        return -1;
     }
 
     table[pos].n = value;
@@ -58,7 +68,7 @@ int setn(char *name, float value) {
 
 float getn(char *name) {
     int pos = find(name);
-    if(pos < 0 || pos >= last) {
+    if(pos < 0 || pos > last) {
         fprintf(stderr, "Error on line %d, use of undeclared variable %s\n", yylineno, name);
         return rand();
     }
