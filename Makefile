@@ -8,11 +8,11 @@ IGNORE=#-Wno-format
 
 all: obj bin parser lexer compile #run
 
-obj: obj/
-	mkdir obj
+obj:
+	@mkdir obj
 
-bin: bin/
-	mkdir bin
+bin:
+	@mkdir bin
 
 parser: parser.y
 	bison -d parser.y; mv parser.tab.c $(OBJDIR); mv parser.tab.h $(OBJDIR)
