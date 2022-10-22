@@ -101,13 +101,24 @@ char* sets(char *name, char *value) {
         return NULL;
     }
 
+    if(table[pos].type == STRING && table[pos].s != NULL) {
+	free(table[pos].s);
+    }
+
     table[pos].s = (char*)malloc(length);
+
+    if(table[pos].s == NULL) {
+	fprintf(stderr, "Fatal: failed to allocate memory for string! D:\n");
+	exit(1);
+    }
+
     char *s = value + 1;
     int c = 0;
     while(s[c] != '"') {
         table[pos].s[c++] = s[c];
     }
     free(value);
+
     #ifdef DEBUG
     printf("[INFO]: variable '%s', at pos %d, now has value \"%s\"\n", table[pos].name, pos, value);
     #endif
