@@ -6,7 +6,7 @@ OUTDIR=bin/
 OBJDIR=obj/
 IGNORE=#-Wno-format
 
-all: obj bin parser lexer compile run
+all: obj bin parser lexer compile #run
 
 obj: obj/
 	mkdir obj
@@ -26,8 +26,8 @@ table: src/table.c
 compile: $(OBJDIR)/lex.yy.c $(OBJDIR)/parser.tab.c table
 	cd $(OBJDIR); $(CC) $(DEBUG) $(IGNORE) lex.yy.c parser.tab.c table.o $(LFLAGS) -o $(OUT); mv compiler ../$(OUTDIR)
 
-run: compile
-	cd $(OUTDIR); ./$(OUT)
+#run: compile
+#	cd $(OUTDIR); ./$(OUT)
 
 clean:
 	cd $(OBJDIR); rm *; cd ../$(OUTDIR); rm $(OUT)
