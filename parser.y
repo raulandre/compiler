@@ -53,8 +53,8 @@ statement: TYPE ID SEMI { declare($2, $1); }
         | PRINT ID SEMI { dyn_print($2); }
         | PRINT STR SEMI { char *s = $2 + 1; int c = 0; while(s[c] != '"') putc(s[c++], stdout); putc('\n', stdout); }
         | PRINT exp SEMI { printf("%f\n", $2); }
-        | TIDY ID SEMI { if(gettype($2) == STRING) free(gets($2)); }
-	| QUIT SEMI { puts("Goodbye!\n"); exit(0); } 
+        | TIDY ID SEMI { if(gettype($2) == STRING) { char *s = gets($2); if (s != NULL) free(s); } }
+	| QUIT SEMI { puts("Goodbye!\n"); exit(0); }  
         | DO S END
         ;
 

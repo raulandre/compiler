@@ -23,6 +23,7 @@ int declare(char *name, type type) {
         s.name = strdup(name);
         s.n = 0;
         s.type = type;
+	s.s = NULL;
         table[last++] = s;
 #ifdef DEBUG
         printf("[INFO]: variable '%s' declared!\n", name);
@@ -102,17 +103,24 @@ char* sets(char *name, char *value) {
     }
 
     if(table[pos].type == STRING && table[pos].s != NULL) {
+	#ifdef DEBUG
+	printf("[INFO]: freeing old string \"%s\" to serve %s\n", table[pos].s, value);
+	#endif
 	free(table[pos].s);
     }
 
     table[pos].s = (char*)malloc(length);
+
 
     if(table[pos].s == NULL) {
 	fprintf(stderr, "Fatal: failed to allocate memory for string! D:\n");
 	exit(1);
     }
 
+    memset(table[pos].s, 0, length);
+
     char *s = value + 1;
+
     int c = 0;
     while(s[c] != '"') {
         table[pos].s[c++] = s[c];
@@ -120,7 +128,7 @@ char* sets(char *name, char *value) {
     free(value);
 
     #ifdef DEBUG
-    printf("[INFO]: variable '%s', at pos %d, now has value \"%s\"\n", table[pos].name, pos, value);
+    printf("[INFO]: variable '%s', at pos %d, now has value \"%s\"\n", table[pos].name, pos, table[pos].s);
     #endif
     return table[pos].s;
 }
