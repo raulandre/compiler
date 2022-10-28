@@ -57,7 +57,7 @@ statement: TYPE ID SEMI { declare($2, $1); }
 		| PRINTLN STR SEMI { char *s = $2 + 1; int c = 0; while(s[c] != '"') putc(s[c++], stdout); putc('\n', stdout); }
         | PRINT exp SEMI { printf("%f", $2); }
         | PRINTLN exp SEMI { printf("%f\n", $2); }
-        | TIDY ID SEMI { if(gettype($2) == STRING) { char *s = gets($2); if (s != NULL) { free(s); sets($2, NULL); }}}
+			| TIDY ID SEMI { if(gettype($2) == STRING) { char *s = gets($2); if (s != NULL) { free(s); sets($2, NULL); }} else {fprintf(stderr, "Error on line %d, variable '%s' is not of type STRING or similar\n", yylineno, $2); }}
 	| QUIT SEMI { puts("Goodbye!\n"); exit(0); }  
         | DO S END
         ;
@@ -90,4 +90,3 @@ void dyn_print(char *name, bool newline) {
     default: break;
   }
 }
-
