@@ -11,6 +11,7 @@
 %%
 
 [ \n\r\t]+ { ; }
+"println" { return PRINTLN; }
 "print" { return PRINT; }
 "quit" { return QUIT; }
 "tidy" { return TIDY; }

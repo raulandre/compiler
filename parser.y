@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <math.h>
 #include "../include/table.h"
 #include "../include/types.h"
@@ -9,7 +10,7 @@ extern int yylineno;
 void yyerror(char *s) { printf("Error on line %d, %s\n", yylineno, s); }
 int yywrap() { return 1; }
 
-void dyn_print(char *name);
+void dyn_print(char *name, bool newline);
 
 extern int yylex();
 %}
@@ -29,7 +30,7 @@ extern int yylex();
 %type <n> LETTER
 %type <s> STR
 
-%token ID NUM SEMI PRINT SUM SUB MUL DIV OB CB PEQU MEQU TEQU DEQU
+%token ID NUM SEMI PRINT PRINTLN SUM SUB MUL DIV OB CB PEQU MEQU TEQU DEQU
        QUIT DO END ATTRIB TYPE SQUOTE LETTER STR POW TIDY
 %left SUM SUB
 %right MUL DIV POW
@@ -50,9 +51,12 @@ statement: TYPE ID SEMI { declare($2, $1); }
 	| ID MEQU exp SEMI { setn($1, getn($1) - $3); }
 	| ID TEQU exp SEMI { setn($1, getn($1) * $3); }
 	| ID DEQU exp SEMI { setn($1, getn($1) / $3); }
-        | PRINT ID SEMI { dyn_print($2); }
-        | PRINT STR SEMI { char *s = $2 + 1; int c = 0; while(s[c] != '"') putc(s[c++], stdout); putc('\n', stdout); }
-        | PRINT exp SEMI { printf("%f\n", $2); }
+        | PRINT ID SEMI { dyn_print($2, false); }
+        | PRINTLN ID SEMI { dyn_print($2, true); }
+        | PRINT STR SEMI { char *s = $2 + 1; int c = 0; while(s[c] != '"') putc(s[c++], stdout); }
+		| PRINTLN STR SEMI { char *s = $2 + 1; int c = 0; while(s[c] != '"') putc(s[c++], stdout); putc('\n', stdout); }
+        | PRINT exp SEMI { printf("%f", $2); }
+        | PRINTLN exp SEMI { printf("%f\n", $2); }
         | TIDY ID SEMI { if(gettype($2) == STRING) { char *s = gets($2); if (s != NULL) free(s); } }
 	| QUIT SEMI { puts("Goodbye!\n"); exit(0); }  
         | DO S END
@@ -75,14 +79,15 @@ int main() {
     yyparse();
 }
 
-void dyn_print(char *name) {
+void dyn_print(char *name, bool newline) {
   type t = gettype(name);
 
   switch(t) {
-    case INT: printf("%d\n", (int)getn(name)); break;
-    case CHAR: printf("%c\n", (int)getn(name)); break;
-    case FLOAT: printf("%f\n", (float)getn(name)); break;
-    case STRING: printf("%s\n", gets(name)); break;
+    case INT: { printf("%d", (int)getn(name)); if(newline) putc('\n', stdout); break; }
+    case CHAR: { printf("%c", (int)getn(name)); if(newline) putc('\n', stdout); break; }
+    case FLOAT: { printf("%f", (float)getn(name)); if(newline) putc('\n', stdout); break; }
+    case STRING: { printf("%s", gets(name)); if(newline) putc('\n', stdout); break; }
     default: break;
   }
 }
+
