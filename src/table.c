@@ -91,13 +91,18 @@ char* sets(char *name, char *value) {
         fprintf(stderr, "Error on line %d, use of undeclared variable '%s'\n", yylineno, name);
         return NULL;
     }
+
+	if(value == NULL) {
+		table[pos].s = NULL;
+		return NULL;
+	}
     
     if(table[pos].type != STRING) {
         fprintf(stderr, "Error on line %d, variable '%s' is not of type STRING or similar\n", yylineno, name);
         return NULL;
     }
 
-    size_t length = sizeof(char) * strlen(value) + 1;
+    size_t length = sizeof(char) * strlen(value) - 1;
     if(length == 0) {
         return NULL;
     }
@@ -106,25 +111,25 @@ char* sets(char *name, char *value) {
 	#ifdef DEBUG
 	printf("[INFO]: freeing old string \"%s\" to serve %s\n", table[pos].s, value);
 	#endif
-	free(table[pos].s);
+		free(table[pos].s);
     }
 
     table[pos].s = (char*)malloc(length);
 
-
     if(table[pos].s == NULL) {
-	fprintf(stderr, "Fatal: failed to allocate memory for string! D:\n");
-	exit(1);
+		fprintf(stderr, "Fatal: failed to allocate memory for string! D:\n");
+		exit(1);
     }
 
     memset(table[pos].s, 0, length);
 
     char *s = value + 1;
-
     int c = 0;
     while(s[c] != '"') {
-        table[pos].s[c++] = s[c];
+        table[pos].s[c] = s[c];
+		c++;
     }
+
     free(value);
 
     #ifdef DEBUG

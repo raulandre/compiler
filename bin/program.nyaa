@@ -71,5 +71,11 @@ tidy frase;
 
 float PI = 3.14159265359;
 int raio = 5;
-print "Area da circunferencia: ";
+frase = "Raio da circunferencia: ";
+print frase;
 println PI * raio ^ 2;
+tidy frase;
+
+frase = "ABCDEFGHIJLKMNOPQRSTUVWXYZ";
+println frase;
+tidy frase;
