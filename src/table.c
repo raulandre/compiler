@@ -34,8 +34,6 @@ int declare(char *name, type type) {
 	return -1;
     }
 
-    free(name);
-
     return pos;
 }
 
@@ -130,7 +128,6 @@ char* sets(char *name, char *value) {
 		c++;
     }
 
-    free(value);
 
     #ifdef DEBUG
     printf("[INFO]: variable '%s', at pos %d, now has value \"%s\"\n", table[pos].name, pos, table[pos].s);
