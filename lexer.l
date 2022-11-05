@@ -22,7 +22,7 @@
 "float" { yylval.n = FLOAT; return TYPE; }
 "string" { yylval.n = STRING; return TYPE; }
 [a-zA-Z_][a-zA-Z_\-0-9]* { yylval.s = strdup(yytext); return ID; } 
-"'"[a-zA-Z ]"'" { yylval.n = yytext[1]; return LETTER; }
+"'"[a-zA-Z0-9]"'" { yylval.n = yytext[1]; return LETTER; }
 \"(\\.|[^"\\])*\" { yylval.s = strdup(yytext); return STR; }
 "0x"[0-9A-F]+ { yylval.n = strtol(yytext, NULL, 16); return NUM; }
 "0b"[01]+ { yylval.n = strtol(yytext + 2, NULL, 2); return NUM; }

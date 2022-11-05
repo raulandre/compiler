@@ -1,6 +1,6 @@
-CC=gcc
+CC=clang
 LFLAGS=-lm
-DEBUG=-g #-DDEBUG
+CFLAGS=-g -fsanitize=memory#-DDEBUG
 OUT=compiler
 OUTDIR=bin/
 OBJDIR=obj/
@@ -24,7 +24,7 @@ table: src/table.c
 	cd src; $(CC) $(DEBUG) $(IGNORE) -c *.c -I../include/; mv table.o ../$(OBJDIR)
 
 compile: $(OBJDIR)/lex.yy.c $(OBJDIR)/parser.tab.c table
-	cd $(OBJDIR); $(CC) $(DEBUG) $(IGNORE) lex.yy.c parser.tab.c table.o $(LFLAGS) -o $(OUT); mv compiler ../$(OUTDIR)
+	cd $(OBJDIR); $(CC) $(CFLAGS) $(IGNORE) lex.yy.c parser.tab.c table.o $(LFLAGS) -o $(OUT); mv compiler ../$(OUTDIR)
 
 #run: compile
 #	cd $(OUTDIR); ./$(OUT)
